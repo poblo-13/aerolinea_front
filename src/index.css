@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-viajes-white: #FFFFFF;
+  --color-viajes-blue: #173B65;
+  --color-viajes-amber: #F5A623;
+  --color-viajes-dark: #17212D;
+  --color-viajes-light: #F4F7FA;
+  --color-viajes-muted: #586779;
+}
+
+:root {
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  color: #17212D;
+  background-color: #FFFFFF;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
