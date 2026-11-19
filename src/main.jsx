@@ -5,6 +5,8 @@ import { ApolloProvider } from '@apollo/client/react'
 import { apolloClient } from './graphql/apolloClient'
 import './index.css'
 import App from './App.jsx'
+import { API_ENDPOINTS } from './config/api'
+
 
 async function iniciarMocks() {
   const habilitarMocks =
@@ -17,7 +19,7 @@ async function iniciarMocks() {
     await worker.start({
       onUnhandledRequest: 'bypass',
       serviceWorker: {
-        url: `${import.meta.env.BASE_URL}mockServiceWorker.js`,
+        url: API_ENDPOINTS.worker,
       },
     })
   }

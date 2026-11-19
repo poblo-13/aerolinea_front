@@ -1,7 +1,52 @@
 
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
+import TarjetaInformativa from '../components/TarjetaInformativa'
+import { obtenerDestinos } from '../services/destinosApi'
+
+const caracteristicas = [
+    {
+        icono: 'destinos',
+        titulo: 'Explora destinos',
+        descripcion:
+            'Descubre ciudades, conoce sus países y encuentra actividades populares para disfrutar durante tu viaje.',
+    },
+    {
+        icono: 'vuelos',
+        titulo: 'Consulta vuelos',
+        descripcion:
+            'Revisa opciones de vuelos, fechas de salida, precios y asientos disponibles según el destino elegido.',
+    },
+    {
+        icono: 'hoteles',
+        titulo: 'Descubre hoteles',
+        descripcion:
+            'Encuentra alternativas de alojamiento y consulta sus tarifas, fechas y habitaciones disponibles.',
+    },
+]
 
 function Inicio() {
+    const [destinos, setDestinos] = useState([])
+
+    useEffect(() => {
+        let vigente = true
+
+        obtenerDestinos()
+            .then((datos) => {
+                if (vigente) {
+                    setDestinos(datos)
+                }
+            })
+            .catch(() => {
+                // La página de Inicio puede mostrarse sin el texto dinámico.
+                // Los errores de consulta se gestionan en la página Destinos.
+            })
+
+        return () => {
+            vigente = false
+        }
+    }, [])
+
     return (
         <main>
             <section className="bg-viajes-light px-5 py-12 sm:px-8 sm:py-16">
@@ -20,6 +65,15 @@ function Inicio() {
                             opciones de vuelos y hoteles para planificar tu próximo viaje.
                         </p>
 
+                        {destinos.length > 0 && (
+                            <p className="mt-5 max-w-2xl text-sm leading-relaxed text-white/80">
+                                Explora nuestras ciudades:{' '}
+                                <span className="font-semibold text-white">
+                                    {destinos.map((destino) => destino.ciudad).join(', ')}.
+                                </span>
+                            </p>
+                        )}
+
                         <Link
                             to="/destinos"
                             className="mt-8 inline-block rounded-lg bg-viajes-amber px-6 py-3 font-semibold text-viajes-dark transition-colors hover:bg-amber-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-viajes-amber"
@@ -30,51 +84,29 @@ function Inicio() {
                 </div>
             </section>
 
-            <section className="mx-auto max-w-6xl px-5 py-14 sm:px-8">
-                <div className="max-w-2xl">
-                    <h2 className="text-2xl font-bold text-viajes-blue sm:text-3xl">
+            <section className="mx-auto max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
+                <div className="mb-10 max-w-2xl">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-viajes-blue">
                         Planifica tu próxima aventura
+                    </p>
+
+                    <h2 className="mt-3 text-3xl font-bold text-viajes-blue sm:text-4xl">
+                        Todo lo que necesitas para organizar tu viaje
                     </h2>
 
-                    <p className="mt-3 leading-relaxed text-viajes-muted">
-                        Encuentra información útil para descubrir destinos y
-                        comparar alternativas de viaje en un mismo lugar.
+                    <p className="mt-4 leading-relaxed text-viajes-muted sm:text-lg">
+                        Descubre destinos y consulta alternativas de vuelos y hoteles
+                        para preparar tu próxima escapada.
                     </p>
                 </div>
 
-                <div className="mt-8 grid gap-5 md:grid-cols-3">
-                    <article className="rounded-xl border border-slate-200 bg-white p-6">
-                        <h3 className="text-xl font-semibold text-viajes-blue">
-                            Destinos
-                        </h3>
-
-                        <p className="mt-3 leading-relaxed text-viajes-muted">
-                            Explora diferentes ciudades, conoce sus países y
-                            descubre sus actividades más populares.
-                        </p>
-                    </article>
-
-                    <article className="rounded-xl border border-slate-200 bg-white p-6">
-                        <h3 className="text-xl font-semibold text-viajes-blue">
-                            Vuelos
-                        </h3>
-
-                        <p className="mt-3 leading-relaxed text-viajes-muted">
-                            Consulta alternativas de vuelos, fechas de salida,
-                            precios y asientos disponibles.
-                        </p>
-                    </article>
-
-                    <article className="rounded-xl border border-slate-200 bg-white p-6">
-                        <h3 className="text-xl font-semibold text-viajes-blue">
-                            Hoteles
-                        </h3>
-
-                        <p className="mt-3 leading-relaxed text-viajes-muted">
-                            Descubre opciones de alojamiento, tarifas por noche
-                            y habitaciones disponibles para tu viaje.
-                        </p>
-                    </article>
+                <div className="grid gap-6 md:grid-cols-3">
+                    {caracteristicas.map((caracteristica) => (
+                        <TarjetaInformativa
+                            key={caracteristica.icono}
+                            {...caracteristica}
+                        />
+                    ))}
                 </div>
             </section>
         </main>

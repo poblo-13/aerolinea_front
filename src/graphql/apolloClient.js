@@ -1,9 +1,10 @@
 
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client'
+import { API_ENDPOINTS } from '../config/api'
 
 export const apolloClient = new ApolloClient({
     link: new HttpLink({
-        uri: `${import.meta.env.BASE_URL}graphql`,
+        uri: API_ENDPOINTS.graphql,
     }),
     cache: new InMemoryCache(),
 })

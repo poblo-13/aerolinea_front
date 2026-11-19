@@ -1,6 +1,8 @@
 
 import { useEffect, useState } from 'react'
 import TarjetaDestino from '../components/TarjetaDestino'
+import EstadoCarga from '../components/EstadoCarga'
+import EstadoError from '../components/EstadoError'
 import { obtenerDestinos } from '../services/destinosApi'
 
 function Destinos() {
@@ -10,21 +12,30 @@ function Destinos() {
     const [intento, setIntento] = useState(0)
 
     useEffect(() => {
-        const controller = new AbortController()
+        let vigente = true
 
         async function cargarDestinos() {
             setCargando(true)
             setError('')
 
             try {
-                const datos = await obtenerDestinos(controller.signal)
-                setDestinos(datos)
+                const datos = await obtenerDestinos({
+                    forzar: intento > 0,
+                })
+
+                if (vigente) {
+                    setDestinos(datos)
+                }
             } catch (err) {
-                if (!controller.signal.aborted) {
-                    setError(err.message)
+                if (vigente) {
+                    const mensaje = err.status
+                        ? `Error HTTP ${err.status}: ${err.message}`
+                        : err.message
+
+                    setError(mensaje)
                 }
             } finally {
-                if (!controller.signal.aborted) {
+                if (vigente) {
                     setCargando(false)
                 }
             }
@@ -32,7 +43,9 @@ function Destinos() {
 
         cargarDestinos()
 
-        return () => controller.abort()
+        return () => {
+            vigente = false
+        }
     }, [intento])
 
     return (
@@ -53,26 +66,14 @@ function Destinos() {
             </div>
 
             {cargando && (
-                <p role="status" className="text-viajes-muted">
-                    Cargando destinos...
-                </p>
+                <EstadoCarga mensaje="Cargando destinos..." />
             )}
 
             {!cargando && error && (
-                <div
-                    role="alert"
-                    className="rounded-xl border border-red-200 bg-red-50 p-6"
-                >
-                    <p className="text-red-700">{error}</p>
-
-                    <button
-                        type="button"
-                        onClick={() => setIntento((n) => n + 1)}
-                        className="mt-4 rounded-lg bg-viajes-blue px-5 py-3 font-semibold text-white hover:bg-[#245184]"
-                    >
-                        Reintentar
-                    </button>
-                </div>
+                <EstadoError
+                    mensaje={error}
+                    onReintentar={() => setIntento((n) => n + 1)}
+                />
             )}
 
             {!cargando && !error && destinos.length === 0 && (

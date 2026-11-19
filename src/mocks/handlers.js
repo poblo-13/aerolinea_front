@@ -3,6 +3,8 @@ import { http, HttpResponse } from 'msw/http'
 import { graphql } from 'msw/graphql'
 import { delay } from 'msw/utils/delay'
 import { viajesPorDestino } from './datosViajes'
+import { API_ENDPOINTS } from '../config/api'
+
 
 const destinos = [
     {
@@ -47,19 +49,14 @@ const destinos = [
     },
 ]
 
-const apiGraphql = graphql.link(
-    `${import.meta.env.BASE_URL}graphql`,
-)
+const apiGraphql = graphql.link(API_ENDPOINTS.graphql)
 
 export const handlers = [
     // API REST: listado de destinos
-
-    http.get(`${import.meta.env.BASE_URL}api/destinos`, async () => {
+    http.get(API_ENDPOINTS.destinos, async () => {
         await delay(500)
-
         return HttpResponse.json(destinos)
     }),
-
 
     // API GraphQL: vuelos y hoteles de un destino
     apiGraphql.query(

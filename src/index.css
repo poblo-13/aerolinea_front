@@ -27,3 +27,32 @@ body {
 #root {
   min-height: 100vh;
 }
+
+@layer components {
+  .card-ui {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-sm;
+
+    transition:
+      transform 250ms ease,
+      box-shadow 250ms ease,
+      border-color 250ms ease;
+  }
+
+  @media (hover: hover) {
+    .card-ui:hover {
+      transform: translateY(-4px);
+      border-color: rgb(23 59 101 / 0.28);
+      box-shadow: 0 16px 36px rgb(23 59 101 / 0.14);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-ui {
+      transition: none;
+    }
+
+    .card-ui:hover {
+      transform: none;
+    }
+  }
+}

@@ -4,58 +4,71 @@ import { useQuery } from '@apollo/client/react'
 import { OBTENER_OPCIONES_DESTINO } from '../graphql/consultas'
 import TarjetaVuelo from '../components/TarjetaVuelo'
 import TarjetaHotel from '../components/TarjetaHotel'
+import EstadoCarga from '../components/EstadoCarga'
+import EstadoError from '../components/EstadoError'
 
 function DetalleDestino() {
     const { destinoId } = useParams()
 
-    const { loading, error, data } = useQuery(
+    const { loading, error, data, refetch } = useQuery(
         OBTENER_OPCIONES_DESTINO,
         {
             variables: { destinoId },
+            fetchPolicy: 'cache-first',
+            notifyOnNetworkStatusChange: true,
         },
     )
 
-    // Estado de carga
-    if (loading) {
+    const actualizando = loading && Boolean(data?.opcionesDestino)
+
+    function actualizarOpciones() {
+        refetch().catch(() => {
+            // Apollo actualiza el estado de error de la consulta.
+        })
+    }
+
+    // Estado de carga inicial
+    if (loading && !data?.opcionesDestino) {
         return (
             <main className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
                 <h1 className="text-3xl font-bold text-viajes-blue sm:text-4xl">
                     Opciones de viaje
                 </h1>
 
-                <p role="status" className="mt-5 text-viajes-muted">
-                    Consultando vuelos y hoteles...
-                </p>
-            </main>
-        )
-    }
-
-    // Manejo de errores
-    if (error || !data?.opcionesDestino) {
-        return (
-            <main className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
-                <div className="rounded-xl border border-red-200 bg-red-50 p-6">
-                    <h1 className="text-2xl font-bold text-viajes-dark">
-                        Destino no disponible
-                    </h1>
-
-                    <p role="alert" className="mt-3 text-red-700">
-                        {error?.message ||
-                            'No encontramos información para este destino.'}
-                    </p>
-
-                    <Link
-                        to="/destinos"
-                        className="mt-6 inline-block font-semibold text-viajes-blue underline"
-                    >
-                        Volver a destinos
-                    </Link>
+                <div className="mt-6">
+                    <EstadoCarga mensaje="Consultando vuelos y hoteles..." />
                 </div>
             </main>
         )
     }
 
-    // Los datos ya están disponibles
+    // Error o destino sin información
+    if (!data?.opcionesDestino) {
+        return (
+            <main className="mx-auto max-w-6xl px-5 py-12 sm:px-8">
+                <h1 className="mb-6 text-2xl font-bold text-viajes-blue">
+                    Destino no disponible
+                </h1>
+
+                <EstadoError
+                    mensaje={
+                        error?.message ||
+                        'No encontramos información para este destino.'
+                    }
+                    onReintentar={actualizarOpciones}
+                />
+
+                <Link
+                    to="/destinos"
+                    className="mt-6 inline-block font-semibold text-viajes-blue hover:underline"
+                >
+                    Volver a destinos
+                </Link>
+            </main>
+        )
+    }
+
+    // Datos obtenidos desde GraphQL
     const opciones = data.opcionesDestino
 
     return (
@@ -83,6 +96,26 @@ function DetalleDestino() {
                 <p className="mt-4 text-viajes-muted">
                     Consulta vuelos y alojamientos disponibles para tu destino.
                 </p>
+
+                <button
+                    type="button"
+                    disabled={actualizando}
+                    onClick={actualizarOpciones}
+                    className="mt-6 rounded-lg bg-viajes-blue px-5 py-3 font-semibold text-white transition-colors hover:bg-[#245184] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-viajes-amber disabled:cursor-wait disabled:opacity-60"
+                >
+                    {actualizando
+                        ? 'Actualizando opciones...'
+                        : 'Actualizar opciones'}
+                </button>
+
+                {error && (
+                    <div className="mt-5">
+                        <EstadoError
+                            mensaje={`No se pudieron actualizar las opciones: ${error.message}`}
+                            onReintentar={actualizarOpciones}
+                        />
+                    </div>
+                )}
             </div>
 
             <div className="grid gap-10 lg:grid-cols-2">
@@ -101,7 +134,10 @@ function DetalleDestino() {
                             </p>
                         ) : (
                             opciones.vuelos.map((vuelo) => (
-                                <TarjetaVuelo key={vuelo.id} vuelo={vuelo} />
+                                <TarjetaVuelo
+                                    key={vuelo.id}
+                                    vuelo={vuelo}
+                                />
                             ))
                         )}
                     </div>
@@ -122,7 +158,10 @@ function DetalleDestino() {
                             </p>
                         ) : (
                             opciones.hoteles.map((hotel) => (
-                                <TarjetaHotel key={hotel.id} hotel={hotel} />
+                                <TarjetaHotel
+                                    key={hotel.id}
+                                    hotel={hotel}
+                                />
                             ))
                         )}
                     </div>

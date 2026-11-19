@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 
 function TarjetaDestino({ destino }) {
     return (
-        <article className="flex h-full flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+        <article className="card-ui flex h-full flex-col overflow-hidden">
             <div className="border-b border-slate-100 bg-viajes-light px-6 py-5">
                 <p className="mb-1 text-sm font-medium text-viajes-muted">
                     {destino.pais}
