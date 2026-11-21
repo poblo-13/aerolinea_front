@@ -18,6 +18,10 @@ FLY SOUTH permite explorar destinos turísticos y consultar alternativas de vuel
 - Actualización manual de vuelos y hoteles con Apollo Client.
 - Diseño responsivo para computadores y dispositivos móviles.
 - Componentes reutilizables y animaciones visuales consistentes.
+- Dos opciones de vuelos y dos hoteles por cada destino.
+- Clasificación hotelera de 3, 4 y 5 estrellas obtenida mediante GraphQL.
+- Indicadores visuales para vuelos y hoteles sin disponibilidad.
+- Distribución responsiva de tarjetas para facilitar la comparación de alternativas.
 
 ## Tecnologías utilizadas
 
@@ -146,6 +150,7 @@ El backend mock se habilita en producción mediante la variable:
 `VITE_ENABLE_MSW=true`
 
 **Repositorio:** https://github.com/poblo-13/aerolinea_front
+**Sitio publicado:** https://poblo-13.github.io/aerolinea_front/
 
 ---
 

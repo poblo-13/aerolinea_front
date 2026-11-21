@@ -1,8 +1,10 @@
 
+import { Star } from 'lucide-react'
 import { formatearPrecio } from '../utils/formatearPrecio'
 
 function TarjetaHotel({ hotel }) {
     const disponible = hotel.habitacionesDisponibles > 0
+
     return (
         <article className="card-ui overflow-hidden">
             <div className="border-b border-slate-100 bg-viajes-light px-6 py-5">
@@ -13,18 +15,43 @@ function TarjetaHotel({ hotel }) {
                 <h3 className="text-xl font-bold text-viajes-blue">
                     {hotel.nombre}
                 </h3>
+
+                <div
+                    role="img"
+                    aria-label={`Hotel de ${hotel.estrellas} estrellas`}
+                    className="mt-3 flex items-center gap-1 text-viajes-amber"
+                >
+                    {Array.from(
+                        { length: hotel.estrellas },
+                        (_, indice) => (
+                            <Star
+                                key={indice}
+                                size={18}
+                                fill="currentColor"
+                                strokeWidth={1.5}
+                                aria-hidden="true"
+                            />
+                        ),
+                    )}
+                </div>
             </div>
 
             <div className="space-y-4 p-6">
                 <div>
-                    <p className="text-sm text-viajes-muted">Fecha de entrada</p>
+                    <p className="text-sm text-viajes-muted">
+                        Fecha de entrada
+                    </p>
+
                     <p className="font-semibold text-viajes-dark">
                         {hotel.fechaEntrada}
                     </p>
                 </div>
 
                 <div>
-                    <p className="text-sm text-viajes-muted">Fecha de salida</p>
+                    <p className="text-sm text-viajes-muted">
+                        Fecha de salida
+                    </p>
+
                     <p className="font-semibold text-viajes-dark">
                         {hotel.fechaSalida}
                     </p>
@@ -35,6 +62,7 @@ function TarjetaHotel({ hotel }) {
                         <p className="text-sm text-viajes-muted">
                             Precio por noche
                         </p>
+
                         <p className="text-2xl font-bold text-viajes-blue">
                             {formatearPrecio(hotel.precioPorNoche)}
                         </p>

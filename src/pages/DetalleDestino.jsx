@@ -118,7 +118,7 @@ function DetalleDestino() {
                 )}
             </div>
 
-            <div className="grid gap-10 lg:grid-cols-2">
+            <div className="space-y-12">
                 <section aria-labelledby="titulo-vuelos">
                     <h2
                         id="titulo-vuelos"
@@ -127,7 +127,7 @@ function DetalleDestino() {
                         Vuelos disponibles
                     </h2>
 
-                    <div className="grid gap-5">
+                    <div className="grid gap-6 md:grid-cols-2">
                         {opciones.vuelos.length === 0 ? (
                             <p className="text-viajes-muted">
                                 No hay vuelos disponibles para este destino.
@@ -151,7 +151,7 @@ function DetalleDestino() {
                         Hoteles disponibles
                     </h2>
 
-                    <div className="grid gap-5">
+                    <div className="grid gap-6 md:grid-cols-2">
                         {opciones.hoteles.length === 0 ? (
                             <p className="text-viajes-muted">
                                 No hay hoteles disponibles para este destino.

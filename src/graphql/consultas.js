@@ -18,6 +18,7 @@ export const OBTENER_OPCIONES_DESTINO = gql`
       hoteles {
         id
         nombre
+        estrellas
         fechaEntrada
         fechaSalida
         precioPorNoche
